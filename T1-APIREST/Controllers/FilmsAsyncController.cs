@@ -1,16 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using T1_APIREST.Context;
+using T1_APIREST.DTO;
 using T1_APIREST.Models;
 
 namespace T1_APIREST.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("/api/Films")]
     [ApiController]
     public class FilmsAsyncController : ControllerBase
     {
@@ -22,6 +25,7 @@ namespace T1_APIREST.Controllers
         }
 
         // GET: api/Films
+        [Authorize]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Film>>> GetFilms()
         {
@@ -43,17 +47,32 @@ namespace T1_APIREST.Controllers
         }
         // POST: api/Films
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+       
         [HttpPost]
-        public async Task<ActionResult<Film>> PostFilm(Film film)
+        public async Task<ActionResult<Film>> PostFilm(FilmInsertDTO filmDTO)
         {
-            _context.Films.Add(film);
-            await _context.SaveChangesAsync();
+            var film = new Film{
+                Name = filmDTO.Name,
+                Description = filmDTO.Description,
+                DirectorId = filmDTO.DirectorId
+            };
+
+            try
+            {
+                await _context.Films.AddAsync(film);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest();
+            }
+
 
             return CreatedAtAction(nameof(GetFilm), new { id = film.ID }, film);
         }
 
         // DELETE: api/Films/5
-        [HttpDelete("{id}")]
+        [HttpDelete("delete/{id}")]
         public async Task<IActionResult> DeleteFilm(int id)
         {
             var film = await _context.Films.FindAsync(id);
@@ -68,7 +87,7 @@ namespace T1_APIREST.Controllers
         }
         // PUT: api/Films/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
+        [HttpPut("put/{id}")]
         public async Task<IActionResult> PutFilm(int id, Film film)
         {
             if (id != film.ID)

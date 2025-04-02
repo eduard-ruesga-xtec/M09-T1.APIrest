@@ -3,14 +3,22 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace T1_APIREST.Models
 {
-    public enum EFilmGenre { action, terror, comedy, romantic, scrifi}
+    public enum EFilmGenre { action, terror, comedy, romantic, scrify }
     public class Film
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ID { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
+
+        [Required][MaxLength(50)] 
+        public string Name { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
         public EFilmGenre FilmGenre { get; set; }
+
+        [Required]
+        public int DirectorId { get; set; }
+
+        [ForeignKey("DirectorID")]
+        public Director Director { get; set; } = null;
     }
 }
