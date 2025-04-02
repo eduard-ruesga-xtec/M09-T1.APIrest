@@ -28,14 +28,19 @@ namespace T1_APIREST.Controllers
             _logger = logger;
         }
 
-        [Authorize]
+        /// <summary>
+        ///     Prova per a comprovar claims del Token. Only development enviromment
+        /// </summary>
+        /// <returns></returns>
+        [Authorize(Roles ="Editor")]
         [HttpGet("prova")]
         public IActionResult ProvaToken()
         {
             return Ok(new
             {
                 Usuari = User.Identity?.Name,
-                Id = User.FindFirst(ClaimTypes.NameIdentifier)?.Value
+                Id = User.FindFirst(ClaimTypes.NameIdentifier)?.Value,
+                Rol = User.FindFirst(ClaimTypes.Role)?.Value
             });
         }
 

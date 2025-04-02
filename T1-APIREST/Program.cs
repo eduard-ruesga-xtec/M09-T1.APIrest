@@ -26,26 +26,26 @@ namespace T1_APIREST
             object value = builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(connectionString));
 
             builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
-            {
-                // Configuració de contrasenyes
-                options.Password.RequireDigit = true;
-                options.Password.RequiredLength = 6;
-                options.Password.RequireNonAlphanumeric = false;
-                options.Password.RequireUppercase = false;
-                options.Password.RequireLowercase = true;
+             {
+                 // Configuració de contrasenyes
+                 options.Password.RequireDigit = true;
+                 options.Password.RequiredLength = 6;
+                 options.Password.RequireNonAlphanumeric = false;
+                 options.Password.RequireUppercase = false;
+                 options.Password.RequireLowercase = true;
 
-                // Configuració del correu electrònic
-                options.User.RequireUniqueEmail = true;
+                 // Configuració del correu electrònic
+                 options.User.RequireUniqueEmail = true;
 
-                // Configuració de lockout (bloqueig d’usuari)
-                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
-                options.Lockout.MaxFailedAccessAttempts = 5;
-                options.Lockout.AllowedForNewUsers = true;
+                 // Configuració de lockout (bloqueig d’usuari)
+                 options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+                 options.Lockout.MaxFailedAccessAttempts = 5;
+                 options.Lockout.AllowedForNewUsers = true;
 
-                // Configuració del login
-                options.SignIn.RequireConfirmedEmail = false; // true si vols que es confirmi el correu
-            })
-                .AddEntityFrameworkStores<AppDbContext>()
+                 // Configuració del login
+                 options.SignIn.RequireConfirmedEmail = false; // true si vols que es confirmi el correu
+             })
+                 .AddEntityFrameworkStores<AppDbContext>()
                 .AddDefaultTokenProviders();
 
             //Configuracio del Token i les seves validacions
@@ -110,7 +110,13 @@ namespace T1_APIREST
                 });
             });
 
+            //********
             var app = builder.Build();
+            //*******
+            
+            //***** Middlewares ******//
+
+            //App pipeline
 
             // Crear rols inicials: Admin i Editor
             using (var scope = app.Services.CreateScope())

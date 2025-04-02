@@ -83,6 +83,7 @@ namespace T1_APIREST.Controllers
 
             return Ok( CreateToken(claims.ToArray()));
         }
+
         private string CreateToken(Claim[] claims)
         {
             // Carreguem les dades des del appsettings.json

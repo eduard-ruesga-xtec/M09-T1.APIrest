@@ -15,11 +15,11 @@ namespace T1_APIREST.Controllers
 {
     [Route("/api/Films")]
     [ApiController]
-    public class FilmsAsyncController : ControllerBase
+    public class FilmsController : ControllerBase
     {
         private readonly AppDbContext _context;
 
-        public FilmsAsyncController(AppDbContext context)
+        public FilmsController(AppDbContext context)
         {
             _context = context;
         }
