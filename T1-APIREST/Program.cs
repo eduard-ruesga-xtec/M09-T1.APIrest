@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
+using System.Text.Json.Serialization;
 using T1_APIREST.Context;
 using T1_APIREST.Context;
 using T1_APIREST.Controllers;
@@ -76,7 +77,11 @@ namespace T1_APIREST
 
             builder.Services.AddAuthorization();
 
-            builder.Services.AddControllers();
+            //Afegim els controllers i Evitem que a l'hora de crear els respons no tenir un bucle infinit per les relacions entre entities
+            builder.Services.AddControllers().AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+            }); ;
 
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
             builder.Services.AddOpenApi();

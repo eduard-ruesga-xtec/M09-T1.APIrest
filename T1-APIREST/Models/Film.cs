@@ -16,7 +16,7 @@ namespace T1_APIREST.Models
         public EFilmGenre FilmGenre { get; set; }
 
         [Required]
-        public int DirectorId { get; set; }
+        public int DirectorID { get; set; }
 
         [ForeignKey("DirectorID")]
         public Director Director { get; set; } = null;

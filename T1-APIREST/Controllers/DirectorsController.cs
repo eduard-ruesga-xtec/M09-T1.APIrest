@@ -32,7 +32,6 @@ namespace T1_APIREST.Controllers
         ///     Prova per a comprovar claims del Token. Only development enviromment
         /// </summary>
         /// <returns></returns>
-        [Authorize(Roles ="Editor")]
         [HttpGet("prova")]
         public IActionResult ProvaToken()
         {
@@ -45,7 +44,6 @@ namespace T1_APIREST.Controllers
         }
 
         // GET: api/Directors
-        [Authorize]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Director>>> GetDirectors()
         {

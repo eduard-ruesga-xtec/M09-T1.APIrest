@@ -266,9 +266,6 @@ namespace T1_APIREST.Migrations
                     b.Property<int>("DirectorID")
                         .HasColumnType("int");
 
-                    b.Property<int>("DirectorId")
-                        .HasColumnType("int");
-
                     b.Property<int>("FilmGenre")
                         .HasColumnType("int");
 
@@ -279,7 +276,7 @@ namespace T1_APIREST.Migrations
 
                     b.HasKey("ID");
 
-                    b.HasIndex("DirectorId");
+                    b.HasIndex("DirectorID");
 
                     b.ToTable("Films");
                 });
@@ -339,7 +336,7 @@ namespace T1_APIREST.Migrations
                 {
                     b.HasOne("T1_APIREST.Models.Director", "Director")
                         .WithMany("Films")
-                        .HasForeignKey("DirectorId")
+                        .HasForeignKey("DirectorID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

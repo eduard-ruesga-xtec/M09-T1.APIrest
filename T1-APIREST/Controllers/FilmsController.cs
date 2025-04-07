@@ -24,12 +24,26 @@ namespace T1_APIREST.Controllers
             _context = context;
         }
 
-        // GET: api/Films
-        [Authorize]
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Film>>> GetFilms()
+        [HttpGet("hi")]
+        public IActionResult helloClient()
         {
-            return await _context.Films.ToListAsync();
+           return Ok("Helo client");
+        }
+        // GET: api/Films
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<FilmGetDTO>>> GetFilms()
+        {
+            var films = await _context.Films
+                .Include(f => f.Director)
+                .Select(f => new FilmGetDTO
+                {
+                    Id = f.ID,
+                    Name = f.Name,
+                    Description = f.Description,
+                    DirectorName = $"{f.Director.Name}  {f.Director.Surname}"
+                })
+                .ToListAsync();
+            return Ok(films);
         }
 
         // GET: api/Films/5
@@ -51,10 +65,17 @@ namespace T1_APIREST.Controllers
         [HttpPost]
         public async Task<ActionResult<Film>> PostFilm(FilmInsertDTO filmDTO)
         {
+            // Verificar si el director existeix
+            var director = await _context.Directors.FindAsync(filmDTO.DirectorId);
+            if (director == null)
+            {
+                return NotFound("Director not found.");
+            }
+
             var film = new Film{
                 Name = filmDTO.Name,
                 Description = filmDTO.Description,
-                DirectorId = filmDTO.DirectorId
+                DirectorID = filmDTO.DirectorId
             };
 
             try
@@ -62,13 +83,14 @@ namespace T1_APIREST.Controllers
                 await _context.Films.AddAsync(film);
                 await _context.SaveChangesAsync();
             }
-            catch (Exception ex)
+            catch (DbUpdateException ex)
             {
-                return BadRequest();
+                return BadRequest(ex);
             }
 
 
-            return CreatedAtAction(nameof(GetFilm), new { id = film.ID }, film);
+            // return CreatedAtAction(nameof(GetFilm), new { id = film.ID }, film);
+            return Ok(film);
         }
 
         // DELETE: api/Films/5

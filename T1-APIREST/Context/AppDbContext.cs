@@ -1,5 +1,4 @@
-﻿using Humanizer;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using T1_APIREST.Models;
 
@@ -16,11 +15,10 @@ namespace T1_APIREST.Context
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<Director>()
-                .HasMany(d => d.Films)
-                .WithOne(f => f.Director)
-                .HasForeignKey(f => f.DirectorId)
-                .OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<Film>()
+            .HasOne(f => f.Director)
+            .WithMany(d => d.Films)
+            .HasForeignKey(f => f.DirectorID);
 
         }
 
