@@ -25,6 +25,13 @@ namespace WebApplication1
                 client.BaseAddress = new Uri(apiBaseUrl);
             });
 
+            builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+            .AddCookie(options =>
+            {
+                options.LoginPath = "/Login";
+                options.AccessDeniedPath = "/AccessDenied";
+            });
+            builder.Services.AddSession();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -37,6 +44,8 @@ namespace WebApplication1
 
             app.UseHttpsRedirection();
 
+            //Activem les Sessions abans de l'enroutament
+            app.UseSession();
 
             app.UseRouting();
 
