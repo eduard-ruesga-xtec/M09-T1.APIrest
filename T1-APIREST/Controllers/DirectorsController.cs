@@ -28,38 +28,25 @@ namespace T1_APIREST.Controllers
             _logger = logger;
         }
 
-        /// <summary>
-        ///     Prova per a comprovar claims del Token. Only development enviromment
-        /// </summary>
-        /// <returns></returns>
-        [HttpGet("prova")]
-        public IActionResult ProvaToken()
-        {
-            return Ok(new
-            {
-                Usuari = User.Identity?.Name,
-                Id = User.FindFirst(ClaimTypes.NameIdentifier)?.Value,
-                Rol = User.FindFirst(ClaimTypes.Role)?.Value
-            });
-        }
-
         // GET: api/Directors
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Director>>> GetDirectors()
         {
-            return await _context.Directors.ToListAsync();
+            return await _context.Directors
+                             .Include(d=> d.Films)
+                             .ToListAsync();
         }
 
         // GET: api/Directors/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Director>> GetDirector(int id)
         {
-            var director = await _context.Directors.FindAsync(id);
+            var director = await _context.Directors
+                                        .Include(d => d.Films)
+                                        .FirstOrDefaultAsync(d => d.Id == id);
 
             if (director == null)
-            {
                 return NotFound();
-            }
 
             return director;
         }
@@ -97,6 +84,7 @@ namespace T1_APIREST.Controllers
 
         // POST: api/Directors
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [Authorize]
         [HttpPost]
         public async Task<ActionResult<Director>> PostDirector(DirectorInsertDTO directorDTO)
         {
@@ -121,6 +109,7 @@ namespace T1_APIREST.Controllers
         }
 
         // DELETE: api/Directors/5
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteDirector(int id)
         {

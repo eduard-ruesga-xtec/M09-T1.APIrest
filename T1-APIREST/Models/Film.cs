@@ -15,6 +15,7 @@ namespace T1_APIREST.Models
         public string Description { get; set; } = string.Empty;
         public EFilmGenre FilmGenre { get; set; }
 
+        //Changed name like database column name
         [Required]
         public int DirectorID { get; set; }
 

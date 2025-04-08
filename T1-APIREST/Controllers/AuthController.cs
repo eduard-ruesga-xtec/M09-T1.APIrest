@@ -25,6 +25,21 @@ namespace T1_APIREST.Controllers
         }
 
 
+        /// <summary>
+        ///     Prova per a comprovar claims del Token. Only development enviromment
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("prova")]
+        public IActionResult ProvaToken()
+        {
+            return Ok(new
+            {
+                Usuari = User.Identity?.Name,
+                Id = User.FindFirst(ClaimTypes.NameIdentifier)?.Value,
+                Rol = User.FindFirst(ClaimTypes.Role)?.Value
+            });
+        }
+
         [HttpPost("registre")]
         public async Task<IActionResult> Register([FromBody] RegisterDTO model)
         {

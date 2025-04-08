@@ -24,6 +24,7 @@ namespace T1_APIREST.Controllers
             _context = context;
         }
 
+        [AllowAnonymous]
         [HttpGet("hi")]
         public IActionResult helloClient()
         {
@@ -40,7 +41,7 @@ namespace T1_APIREST.Controllers
                     Id = f.ID,
                     Name = f.Name,
                     Description = f.Description,
-                    DirectorName = $"{f.Director.Name}  {f.Director.Surname}"
+                    DirectorName = $"{f.Director.Name} {f.Director.Surname}"
                 })
                 .ToListAsync();
             return Ok(films);
@@ -57,11 +58,11 @@ namespace T1_APIREST.Controllers
                 return NotFound();
             }
 
-            return film;
+            return Ok(film);
         }
         // POST: api/Films
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-       
+        [Authorize]
         [HttpPost]
         public async Task<ActionResult<Film>> PostFilm(FilmInsertDTO filmDTO)
         {
@@ -94,6 +95,7 @@ namespace T1_APIREST.Controllers
         }
 
         // DELETE: api/Films/5
+        [Authorize]
         [HttpDelete("delete/{id}")]
         public async Task<IActionResult> DeleteFilm(int id)
         {
@@ -102,13 +104,20 @@ namespace T1_APIREST.Controllers
             {
                 return NotFound();
             }
-            _context.Films.Remove(film);
-            await _context.SaveChangesAsync();
-
+            try
+            {
+                _context.Films.Remove(film);
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException ex)
+            {
+                return BadRequest(ex);
+            }
             return NoContent();
         }
         // PUT: api/Films/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [Authorize]
         [HttpPut("put/{id}")]
         public async Task<IActionResult> PutFilm(int id, Film film)
         {
